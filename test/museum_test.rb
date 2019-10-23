@@ -24,6 +24,7 @@ class MuseumTest < Minitest::Test
     assert_equal "Denver Museum of Nature and Science", @dmns.name
     assert_equal [], @dmns.exhibits
     assert_equal [], @dmns.patrons
+    assert_equal 0, @dmns.revenue
   end
 
   def test_it_can_add_exhibit
@@ -80,4 +81,21 @@ class MuseumTest < Minitest::Test
       @imax => []
       }), @dmns.patrons_by_exhibit_interest
   end
+
+  # probably will need a helper method to find the sum of the exhibit costs they are interested in
+  def test_it_can_admit_patrons_and_send_to_exhibits
+    @dmns.add_exhibit(@gems_and_minerals)
+    @dmns.add_exhibit(@dead_sea_scrolls)
+    @dmns.add_exhibit(@imax)
+
+    tj = Patron.new("TJ", 7)
+    tj.add_interest("IMAX")
+    tj.add_interest("Dead Sea Scrolls")
+    require "pry"; binding.pry
+    @dmns.admit(tj)
+    # this seems really hard to test in one go so need to figure out how to break it up into steps... and since so many steps are happening it seems like helper methods would be necessary 
+    assert_equal 7, tj.spending_money
+  end
+
+
 end
